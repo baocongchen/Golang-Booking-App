@@ -1,0 +1,38 @@
+{{template "base" .}}
+{{define "content"}}
+<div class="container">
+      <div class="row mt-4">
+        <div class="col-md-6 mx-auto">
+          <h1 class="text-center">Search for Availability</h1>
+          <form action="reservation.html" method="GET">
+            <div id="reservation-date-range" class="row">
+              <div class="col-md-6">
+                <input
+                  type="text"
+                  name="start"
+                  class="form-control"
+                  placeholder="Arrival Date"
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <input
+                  type="text"
+                  name="end"
+                  class="form-control"
+                  placeholder="Departure Date"
+                  required
+                />
+              </div>
+            </div>
+
+            <hr />
+            <button type="submit" class="btn btn-primary mt-3">
+              Search Availability
+            </button>
+          </form>
+          <button type="submit" id="mybtn">Submit</button>
+        </div>
+      </div>
+    </div>
+{{end}}

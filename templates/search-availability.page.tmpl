@@ -1,0 +1,165 @@
+{{template "base" .}}
+{{define "content"}}
+<div class="container">
+      <div class="row mt-4">
+        <div class="col-md-6 mx-auto">
+          <h1 class="text-center">Search for Availability</h1>
+          <form action="reservation.html" method="GET">
+            <div id="reservation-date-range" class="row">
+              <div class="col-md-6">
+                <input
+                  type="text"
+                  name="start"
+                  class="form-control"
+                  placeholder="Arrival Date"
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <input
+                  type="text"
+                  name="end"
+                  class="form-control"
+                  placeholder="Departure Date"
+                  required
+                />
+              </div>
+            </div>
+
+            <hr />
+            <button type="submit" class="btn btn-primary mt-3">
+              Search Availability
+            </button>
+          </form>
+          <button type="submit" id="mybtn">Submit</button>
+        </div>
+      </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+  <script>
+   function notify(msg, type) {
+        notie.alert({
+          type: type,
+          text: msg,
+        });
+      }
+      function notifyModal(icon, title, text) {
+        Swal.fire({
+          icon: icon,
+          title: title,
+          text: text,
+        });
+      }
+      let attention = Prompt();
+      
+      function Prompt() {
+        let toast = function (c) {
+          const { msg = "", icon = "success", position = "top-end" } = c;
+          const Toast = Swal.mixin({
+            toast: true,
+            title: msg,
+            icon: icon,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({});
+        };
+
+        let success = function (c) {
+          const { msg = "", title = "", footer = "" } = c;
+          Swal.fire({
+            icon: "success",
+            title: title,
+            text: msg,
+            footer: footer,
+          });
+        };
+
+        let error = function (c) {
+          const { msg = "", title = "", footer = "" } = c;
+          Swal.fire({
+            icon: "error",
+            title: title,
+            text: msg,
+            footer: footer,
+          });
+        };
+        let custom = async (c) => {
+          const { msg = "", title = "" } = c;
+          const { value: formValues } = await Swal.fire({
+            title: title,
+            html: msg,
+            backdrop: false,
+            focusConfirm: false,
+            showCancelButton: true,
+            willOpen: () => {
+              const elem = document.getElementById("reservation-date-range-2")
+              const rp = new DateRangePicker(elem, {
+              });
+            },
+            preConfirm: () => {
+              return [
+                document.getElementById("start").value,
+                document.getElementById("end").value,
+              ];
+            },
+            didOpen: () => {
+              document.getElementById("start").removeAttribute("disabled");
+              document.getElementById("end").removeAttribute("disabled");
+            }
+          });
+
+          if (formValues) {
+            Swal.fire(JSON.stringify(formValues));
+          }
+        }
+        return {
+          toast: toast,
+          success: success,
+          error: error,
+          custom: custom,
+        };
+      }
+  document.getElementById("mybtn").addEventListener("click", function () {
+        //notify("This is my message", "success")
+        //notifyModal("success", "Something went wrong", "Don't press the button")
+        let html = `
+          <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
+                <div class="row" id="reservation-date-range-2">
+                  <div class="col-md-6">
+                    <input
+                      type="text"
+                      name="start"
+                      class="form-control"
+                      placeholder="Arrival Date"
+                      id="start"
+                      disabled
+                      required
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <input
+                      type="text"
+                      name="end"
+                      class="form-control"
+                      placeholder="Departure Date"
+                      id="end"
+                      disabled
+                      required
+                    />
+                  </div>
+                </div>
+          </form>
+        `;
+        attention.custom({ msg: html, title: "Choose your dates"});
+      });
+  </script>
+{{end}}
